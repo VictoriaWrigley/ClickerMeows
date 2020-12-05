@@ -225,9 +225,22 @@ public class GridCon : MonoBehaviour
             CurrencyManager.GetComponent<Money>().RemoveCurrency(ExpandCost);
             ExpandCost += Mathf.RoundToInt(ExpandCost / 4f);
         }
+        GridInfo[,] temparray = new GridInfo[width, height];
+        System.Array.Copy(gridArray, temparray, width * height);
         width++;
         height++;
         GenerateGrid(width, height, 1);
+        for (int x = 0; x < temparray.GetLength(0); x++)
+        {
+            for (int y = 0; y < temparray.GetLength(1); y++)
+            {
+                gridArray[x, y].celltype = temparray[x, y].celltype;
+                gridArray[x, y].timer = temparray[x, y].timer;
+                gridArray[x, y].CurrentPrefab = temparray[x, y].CurrentPrefab;
+                UpdatePrefab(x, y);
+            }
+        }
+
         FarmGround.transform.localScale = new Vector3(width / 10f, 1, height / 10f);
         FarmGround.transform.position = new Vector3(width / 2f, 0, height / 2f);
     }
