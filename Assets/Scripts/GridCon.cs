@@ -30,6 +30,7 @@ public class GridCon : MonoBehaviour
     //temp
     public TextMeshProUGUI PumpkinText;
     public TextMeshProUGUI SpinachText;
+    public TextMeshProUGUI BananaText;
     public TextMeshProUGUI ExpandText;
     public GameObject CellHighlight;
     public GameObject FarmGround;
@@ -77,6 +78,7 @@ public class GridCon : MonoBehaviour
         //temp
         PumpkinText.text = ItemList[1].NumberOfSeeds.ToString();
         SpinachText.text = ItemList[5].NumberOfSeeds.ToString();
+        BananaText.text = ItemList[9].NumberOfSeeds.ToString();
         ExpandText.text = ExpandCost.ToString();
         //Tick
         if (Pause == false)
