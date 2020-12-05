@@ -34,6 +34,15 @@ public class GridCon : MonoBehaviour
     public TextMeshProUGUI ExpandText;
     public GameObject CellHighlight;
     public GameObject FarmGround;
+
+    public int Sseedspertick;
+    public int pseedspertick;
+    public int bseedspertick;
+
+    public TextMeshProUGUI Stext;
+    public TextMeshProUGUI ptext;
+    public TextMeshProUGUI btext;
+
     void Awake()
     {
         FarmGround.transform.localScale = new Vector3(StartWidth /10f, 1, StartHeight / 10f);
@@ -80,6 +89,9 @@ public class GridCon : MonoBehaviour
         SpinachText.text = ItemList[5].NumberOfSeeds.ToString();
         BananaText.text = ItemList[9].NumberOfSeeds.ToString();
         ExpandText.text = ExpandCost.ToString();
+        Stext.text = Sseedspertick.ToString();
+        ptext.text = pseedspertick.ToString();
+        btext.text = bseedspertick.ToString();
         //Tick
         if (Pause == false)
         {
@@ -88,10 +100,53 @@ public class GridCon : MonoBehaviour
             {
                 UpdateGrid();
                 tick = 0;
+                BuyMerchantSeeds();
             }
             UpdateMouse();
         }
 
+    }
+
+    //fix this
+    public void BuyMerchantSeeds()
+    {
+        if(Sseedspertick > 0 && CurrencyManager.GetComponent<Money>().currency >= Sseedspertick)
+        {
+            foreach (Items item in ItemList)
+            {
+                if (item.CellType == 5)
+                {
+                    item.NumberOfSeeds += Sseedspertick;
+                    CurrencyManager.GetComponent<Money>().RemoveCurrency(Sseedspertick);
+                }
+            }
+        }
+        if (pseedspertick > 0 && CurrencyManager.GetComponent<Money>().currency >= pseedspertick *3)
+        {
+            foreach (Items item in ItemList)
+            {
+                if (item.CellType == 1)
+                {
+                
+                        item.NumberOfSeeds += pseedspertick;
+                        CurrencyManager.GetComponent<Money>().RemoveCurrency(pseedspertick * 3);
+                    
+                }
+            }
+        }
+        if (bseedspertick > 0 && CurrencyManager.GetComponent<Money>().currency >= bseedspertick * 20)
+        {
+            foreach (Items item in ItemList)
+            {
+                if (item.CellType == 9)
+                {
+                 
+                        item.NumberOfSeeds += bseedspertick;
+                        CurrencyManager.GetComponent<Money>().RemoveCurrency(bseedspertick * 20);
+                 
+                }
+            }
+        }
     }
 
     private void UpdateMouse()
@@ -381,6 +436,46 @@ public class GridCon : MonoBehaviour
         {
             AddSeed(index);
             CurrencyManager.GetComponent<Money>().RemoveCurrency(cost);
+            SelectedSeedType = index;
         }
+    }
+
+    public void AddDumbButton(int type)
+    {
+        Debug.Log("press");
+        if(type == 5)
+        {
+            Sseedspertick++;
+        }
+        if (type == 1)
+        {
+            pseedspertick++;
+        }
+        if (type == 9)
+        {
+            bseedspertick++;
+        }
+    }
+
+    public void MinusDumbButton(int type)
+    {
+        Debug.Log("press");
+        if (type == 5)
+        {
+            Sseedspertick--;
+        }
+        if (type == 1)
+        {
+            pseedspertick--;
+        }
+        if (type == 9)
+        {
+            bseedspertick--;
+        }
+    }
+
+    public void test()
+    {
+        Debug.Log("test");
     }
 }
