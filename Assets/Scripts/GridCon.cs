@@ -108,6 +108,7 @@ public class GridCon : MonoBehaviour
         else
         {
             CellHighlight.SetActive(false);
+            return;
         }
         int x1 = Mathf.FloorToInt(mousepos[0]);
         int y1 = Mathf.FloorToInt(mousepos[2]);

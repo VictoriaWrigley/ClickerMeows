@@ -18,6 +18,7 @@ public class CatCon : MonoBehaviour
 
     public void Awake()
     {
+        CatManager = GameObject.Find("CatManager");
         GridManager = GameObject.Find("GridManager");
     }
     public void OnEnable()
