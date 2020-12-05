@@ -1,0 +1,229 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &1836658340119773229
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1836658340119773231}
+  - component: {fileID: 1836658340119773230}
+  m_Layer: 0
+  m_Name: GridManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 5132851093641282708, guid: 0000000000000000d000000000000000, type: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1836658340119773231
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1836658340119773229}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1836658340119773230
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1836658340119773229}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c83cb0d627f3bb945b3772026724137a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  dirt: {r: 0.46226418, g: 0.26164848, b: 0.15263441, a: 1}
+  PumpkinSeed: {r: 0.8584906, g: 0.80726576, b: 0.518334, a: 1}
+  YoungPumpkin: {r: 0.23451404, g: 0.8018868, b: 0.36747608, a: 1}
+  Pumpkin: {r: 1, g: 0.62027395, b: 0, a: 1}
+  SpinachSeed: {r: 0.7075472, g: 0.6084154, b: 0.48727307, a: 1}
+  YoungSpinach: {r: 0.34585258, g: 0.6320754, b: 0.35240236, a: 1}
+  Spinach: {r: 0.08665959, g: 0.6603774, b: 0, a: 1}
+  CellBehaviourManager: {fileID: 0}
+  CurrencyManager: {fileID: 0}
+  SelectedSeedType: 1
+  ItemList:
+  - Name: Empty
+    CellType: 0
+    Seed: 0
+    Plant: 0
+    Growing: 0
+    Dying: 0
+    GrowTime: 0
+    DieTime: 0
+    Cash: 0
+    Prefab: {fileID: 0}
+    NumberOfSeeds: 0
+    Cost: 0
+  - Name: PumpkinSeed
+    CellType: 1
+    Seed: 1
+    Plant: 0
+    Growing: 1
+    Dying: 0
+    GrowTime: 2
+    DieTime: 0
+    Cash: 0
+    Prefab: {fileID: 8977914273073501919, guid: b99d2f7bc0e7f7443a18310419d858f5,
+      type: 3}
+    NumberOfSeeds: 0
+    Cost: 3
+  - Name: YoungPumpkin
+    CellType: 2
+    Seed: 0
+    Plant: 0
+    Growing: 1
+    Dying: 0
+    GrowTime: 2
+    DieTime: 0
+    Cash: 0
+    Prefab: {fileID: 4506981884696449133, guid: 994ae4382e3742a45b9f01ea46d97990,
+      type: 3}
+    NumberOfSeeds: 0
+    Cost: 0
+  - Name: PumpkinPlant
+    CellType: 3
+    Seed: 0
+    Plant: 0
+    Growing: 1
+    Dying: 0
+    GrowTime: 2
+    DieTime: 0
+    Cash: 0
+    Prefab: {fileID: 5516791043364770464, guid: 9c700100fb60fc4418d7537d4f09268f,
+      type: 3}
+    NumberOfSeeds: 0
+    Cost: 0
+  - Name: Pumpkin
+    CellType: 4
+    Seed: 0
+    Plant: 1
+    Growing: 0
+    Dying: 0
+    GrowTime: 0
+    DieTime: 0
+    Cash: 6
+    Prefab: {fileID: 2100370693922563993, guid: 2eca58ff5b49b5445a9b2af46ccd6b11,
+      type: 3}
+    NumberOfSeeds: 0
+    Cost: 0
+  - Name: SpinachSeed
+    CellType: 5
+    Seed: 1
+    Plant: 0
+    Growing: 1
+    Dying: 0
+    GrowTime: 2
+    DieTime: 0
+    Cash: 0
+    Prefab: {fileID: 493175482949766267, guid: 17b33c4de741dec40a1fbaa2f43b3265, type: 3}
+    NumberOfSeeds: 0
+    Cost: 1
+  - Name: YoungSpinach
+    CellType: 6
+    Seed: 0
+    Plant: 0
+    Growing: 1
+    Dying: 0
+    GrowTime: 2
+    DieTime: 0
+    Cash: 0
+    Prefab: {fileID: 6254710905257992704, guid: b81dd0874c87c5b4eb4c4fecbfd8cf9d,
+      type: 3}
+    NumberOfSeeds: 0
+    Cost: 0
+  - Name: SpinachPlant
+    CellType: 7
+    Seed: 0
+    Plant: 0
+    Growing: 1
+    Dying: 0
+    GrowTime: 3
+    DieTime: 0
+    Cash: 0
+    Prefab: {fileID: 5238652279039852030, guid: cb34514eeccdd464c8ee5701a846512b,
+      type: 3}
+    NumberOfSeeds: 0
+    Cost: 0
+  - Name: Spinach
+    CellType: 8
+    Seed: 0
+    Plant: 1
+    Growing: 0
+    Dying: 0
+    GrowTime: 0
+    DieTime: 0
+    Cash: 2
+    Prefab: {fileID: 2762658799578545647, guid: 9d9a0155cf6b05641b802fadc22ef1b2,
+      type: 3}
+    NumberOfSeeds: 0
+    Cost: 0
+  - Name: BananaSeed
+    CellType: 9
+    Seed: 1
+    Plant: 0
+    Growing: 1
+    Dying: 0
+    GrowTime: 3
+    DieTime: 0
+    Cash: 0
+    Prefab: {fileID: 1430580802622826717, guid: c23940a48aafbd349a01f771b01b691c,
+      type: 3}
+    NumberOfSeeds: 0
+    Cost: 20
+  - Name: YoungBanana
+    CellType: 10
+    Seed: 0
+    Plant: 0
+    Growing: 1
+    Dying: 0
+    GrowTime: 10
+    DieTime: 0
+    Cash: 0
+    Prefab: {fileID: 2467581605804340438, guid: 7d2851d7158a4df4ba5b93e161ceaa72,
+      type: 3}
+    NumberOfSeeds: 0
+    Cost: 0
+  - Name: BananaTree
+    CellType: 11
+    Seed: 0
+    Plant: 0
+    Growing: 1
+    Dying: 0
+    GrowTime: 20
+    DieTime: 0
+    Cash: 0
+    Prefab: {fileID: 49435242331212025, guid: 578f7379228a20045b4c4ec8ceb416de, type: 3}
+    NumberOfSeeds: 0
+    Cost: 0
+  - Name: Banana
+    CellType: 12
+    Seed: 0
+    Plant: 1
+    Growing: 0
+    Dying: 0
+    GrowTime: 0
+    DieTime: 0
+    Cash: 40
+    Prefab: {fileID: 1872554448728206392, guid: 8e25c14f45711f04abe46700cb3da7ed,
+      type: 3}
+    NumberOfSeeds: 0
+    Cost: 0
+  Pause: 0
+  CashParticles: {fileID: 7464868361267569002, guid: e41c99d41e39e3e40bfcbf8c5b8234d0,
+    type: 3}
+  CatManager: {fileID: 0}
+  SeedManager: {fileID: 0}
+  PumpkinText: {fileID: 0}
+  SpinachText: {fileID: 0}
