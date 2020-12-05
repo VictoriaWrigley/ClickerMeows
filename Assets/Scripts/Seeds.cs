@@ -14,14 +14,12 @@ public class Seeds : MonoBehaviour
 
     public void OpenShop()
     {
-        InGameUI.SetActive(false);
         Shop.SetActive(true);
         GridManager.GetComponent<GridCon>().PauseCon(true);
     }
 
     public void CloseShop()
     {
-        InGameUI.SetActive(true);
         Shop.SetActive(false);
         GridManager.GetComponent<GridCon>().PauseCon(false);
     }

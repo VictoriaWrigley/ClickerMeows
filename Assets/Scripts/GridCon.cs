@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using TMPro;
 public class GridCon : MonoBehaviour
 {
     private GridInfo[,] gridArray;
@@ -24,6 +24,9 @@ public class GridCon : MonoBehaviour
     public GameObject CashParticles;
     public GameObject CatManager;
     public GameObject SeedManager;
+    //temp
+    public TextMeshProUGUI PumpkinText;
+    public TextMeshProUGUI SpinachText;
     void Awake()
     {
         if (ItemList == null)
@@ -63,8 +66,11 @@ public class GridCon : MonoBehaviour
 
     void Update()
     {
+        //temp
+        PumpkinText.text = ItemList[1].NumberOfSeeds.ToString();
+        SpinachText.text = ItemList[5].NumberOfSeeds.ToString();
         //Tick
-        if(Pause == false)
+        if (Pause == false)
         {
             tick += Time.deltaTime;
         }
