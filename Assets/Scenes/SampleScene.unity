@@ -761,7 +761,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8522d4af652aed74fa5456cb85db69a7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  TypeOfSeed: 1
   GridManager: {fileID: 739237725}
   CurrencyManager: {fileID: 2124682967}
   Shop: {fileID: 730156223}
@@ -1061,8 +1060,7 @@ MonoBehaviour:
   Spinach: {r: 0.08665959, g: 0.6603774, b: 0, a: 1}
   CellBehaviourManager: {fileID: 536684933}
   CurrencyManager: {fileID: 2124682967}
-  numberofseeds: 1
-  typeofseed: 0
+  SelectedSeedType: 0
   ItemList:
   - Name: Empty
     CellType: 0
@@ -1074,6 +1072,8 @@ MonoBehaviour:
     DieTime: 0
     Cash: 0
     Prefab: {fileID: 0}
+    NumberOfSeeds: 0
+    Cost: 0
   - Name: PumpkinSeed
     CellType: 1
     Seed: 1
@@ -1085,6 +1085,8 @@ MonoBehaviour:
     Cash: 0
     Prefab: {fileID: 8977914273073501919, guid: b99d2f7bc0e7f7443a18310419d858f5,
       type: 3}
+    NumberOfSeeds: 0
+    Cost: 3
   - Name: YoungPumpkin
     CellType: 2
     Seed: 0
@@ -1096,6 +1098,8 @@ MonoBehaviour:
     Cash: 0
     Prefab: {fileID: 4506981884696449133, guid: 994ae4382e3742a45b9f01ea46d97990,
       type: 3}
+    NumberOfSeeds: 0
+    Cost: 0
   - Name: PumpkinPlant
     CellType: 3
     Seed: 0
@@ -1107,6 +1111,8 @@ MonoBehaviour:
     Cash: 0
     Prefab: {fileID: 5516791043364770464, guid: 9c700100fb60fc4418d7537d4f09268f,
       type: 3}
+    NumberOfSeeds: 0
+    Cost: 0
   - Name: Pumpkin
     CellType: 4
     Seed: 0
@@ -1116,7 +1122,10 @@ MonoBehaviour:
     GrowTime: 0
     DieTime: 0
     Cash: 6
-    Prefab: {fileID: 474557913319917318, guid: 3cc21c6ca4c523a40945d89bd03b47be, type: 3}
+    Prefab: {fileID: 2100370693922563993, guid: 2eca58ff5b49b5445a9b2af46ccd6b11,
+      type: 3}
+    NumberOfSeeds: 0
+    Cost: 0
   - Name: SpinachSeed
     CellType: 5
     Seed: 1
@@ -1126,7 +1135,9 @@ MonoBehaviour:
     GrowTime: 2
     DieTime: 0
     Cash: 0
-    Prefab: {fileID: 0}
+    Prefab: {fileID: 189915368334667947, guid: 475850d64fee8d340871dd7805090b08, type: 3}
+    NumberOfSeeds: 0
+    Cost: 1
   - Name: YoungSpinach
     CellType: 6
     Seed: 0
@@ -1136,9 +1147,25 @@ MonoBehaviour:
     GrowTime: 2
     DieTime: 0
     Cash: 0
-    Prefab: {fileID: 0}
-  - Name: Spinach
+    Prefab: {fileID: 3317548225870706201, guid: 33b8323387290304f9fc059777ec3dcb,
+      type: 3}
+    NumberOfSeeds: 0
+    Cost: 0
+  - Name: SpinachPlant
     CellType: 7
+    Seed: 0
+    Plant: 0
+    Growing: 1
+    Dying: 0
+    GrowTime: 2
+    DieTime: 0
+    Cash: 0
+    Prefab: {fileID: 5238652279039852030, guid: cb34514eeccdd464c8ee5701a846512b,
+      type: 3}
+    NumberOfSeeds: 0
+    Cost: 0
+  - Name: Spinach
+    CellType: 8
     Seed: 0
     Plant: 1
     Growing: 0
@@ -1146,10 +1173,15 @@ MonoBehaviour:
     GrowTime: 0
     DieTime: 0
     Cash: 2
-    Prefab: {fileID: 0}
+    Prefab: {fileID: 2762658799578545647, guid: 9d9a0155cf6b05641b802fadc22ef1b2,
+      type: 3}
+    NumberOfSeeds: 0
+    Cost: 0
   Pause: 0
   CashParticles: {fileID: 7464868361267569002, guid: e41c99d41e39e3e40bfcbf8c5b8234d0,
     type: 3}
+  CatManager: {fileID: 1456755458}
+  SeedManager: {fileID: 523535028}
 --- !u!4 &739237727
 Transform:
   m_ObjectHideFlags: 0
@@ -1164,119 +1196,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &749466352
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 749466356}
-  - component: {fileID: 749466355}
-  - component: {fileID: 749466354}
-  - component: {fileID: 749466353}
-  - component: {fileID: 749466357}
-  m_Layer: 0
-  m_Name: Cat
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!136 &749466353
-CapsuleCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 749466352}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  m_Radius: 0.5
-  m_Height: 2
-  m_Direction: 1
-  m_Center: {x: 0, y: 0, z: 0}
---- !u!23 &749466354
-MeshRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 749466352}
-  m_Enabled: 1
-  m_CastShadows: 1
-  m_ReceiveShadows: 1
-  m_DynamicOccludee: 1
-  m_MotionVectors: 1
-  m_LightProbeUsage: 1
-  m_ReflectionProbeUsage: 1
-  m_RenderingLayerMask: 1
-  m_RendererPriority: 0
-  m_Materials:
-  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
-  m_StaticBatchInfo:
-    firstSubMesh: 0
-    subMeshCount: 0
-  m_StaticBatchRoot: {fileID: 0}
-  m_ProbeAnchor: {fileID: 0}
-  m_LightProbeVolumeOverride: {fileID: 0}
-  m_ScaleInLightmap: 1
-  m_ReceiveGI: 1
-  m_PreserveUVs: 0
-  m_IgnoreNormalsForChartDetection: 0
-  m_ImportantGI: 0
-  m_StitchLightmapSeams: 1
-  m_SelectedEditorRenderState: 3
-  m_MinimumChartSize: 4
-  m_AutoUVMaxDistance: 0.5
-  m_AutoUVMaxAngle: 89
-  m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 0
---- !u!33 &749466355
-MeshFilter:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 749466352}
-  m_Mesh: {fileID: 10208, guid: 0000000000000000e000000000000000, type: 0}
---- !u!4 &749466356
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 749466352}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.514, z: 0}
-  m_LocalScale: {x: 0.47696206, y: 0.47696206, z: 0.47696206}
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 11
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &749466357
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 749466352}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4d36572d94049b944bd9d5b086def9b0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Seedtype: 1
-  NumberOfSeeds: 10
-  areax: 0
-  areay: 0
-  areax2: 10
-  areay2: 10
-  MyType: 0
 --- !u!1 &829604453
 GameObject:
   m_ObjectHideFlags: 0
@@ -1873,6 +1792,49 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1246915853}
   m_CullTransparentMesh: 0
+--- !u!1 &1456755458
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1456755460}
+  - component: {fileID: 1456755459}
+  m_Layer: 0
+  m_Name: CatManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1456755459
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1456755458}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4d372b5c71da0cb4ab5fe992da42a50f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!4 &1456755460
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1456755458}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -2.7500393, y: 0.016255071, z: 0.7270557}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 11
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1470241639
 GameObject:
   m_ObjectHideFlags: 0
