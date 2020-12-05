@@ -41,6 +41,8 @@ namespace SpawnData_.Editors
             GUILayout.Label("GrowTIme", GUILayout.Width(40));
             GUILayout.Label("DieTime", GUILayout.Width(40));
             GUILayout.Label("Cash", GUILayout.Width(40));
+            GUILayout.Label("NumberOf", GUILayout.Width(40));
+            GUILayout.Label("Cost", GUILayout.Width(40));
             GUILayout.Label("Prefab", GUILayout.Width(40));
             GUILayout.EndHorizontal();
             for (int cnt = 0; cnt < db.ItemList.Count; cnt++)
@@ -55,6 +57,8 @@ namespace SpawnData_.Editors
                 db.ItemList[cnt].GrowTime = EditorGUILayout.IntField(db.ItemList[cnt].GrowTime, GUILayout.Width(40));
                 db.ItemList[cnt].DieTime = EditorGUILayout.IntField(db.ItemList[cnt].DieTime, GUILayout.Width(40));
                 db.ItemList[cnt].Cash = EditorGUILayout.IntField(db.ItemList[cnt].Cash, GUILayout.Width(40));
+                db.ItemList[cnt].NumberOfSeeds = EditorGUILayout.IntField(db.ItemList[cnt].NumberOfSeeds, GUILayout.Width(40));
+                db.ItemList[cnt].Cost = EditorGUILayout.IntField(db.ItemList[cnt].Cost, GUILayout.Width(40));
                 db.ItemList[cnt].Prefab = EditorGUILayout.ObjectField(db.ItemList[cnt].Prefab, typeof(GameObject), false, GUILayout.Width(120));
                 if (GUILayout.Button("X"))
                 {

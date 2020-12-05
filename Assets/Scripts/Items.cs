@@ -15,5 +15,8 @@ public class Items
     public int DieTime = 0;
     public int Cash = 0;
     public Object Prefab = null;
+    public int NumberOfSeeds = 0;
+    public int Cost = 0;
+
 }
 

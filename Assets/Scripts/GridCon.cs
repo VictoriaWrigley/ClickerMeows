@@ -18,11 +18,12 @@ public class GridCon : MonoBehaviour
     public GameObject CellBehaviourManager;
     private float tick = 0;
     public GameObject CurrencyManager;
-    public int numberofseeds;
-    public int typeofseed;
+    public int SelectedSeedType;
     public List<Items> ItemList;
     public bool Pause = false;
     public GameObject CashParticles;
+    public GameObject CatManager;
+    public GameObject SeedManager;
     void Awake()
     {
         if (ItemList == null)
@@ -55,17 +56,6 @@ public class GridCon : MonoBehaviour
         }
     }
 
-    public void AddSeed(int type)
-    {
-        numberofseeds++;
-        typeofseed = type;
-    }
-
-    public void ResetSeeds()
-    {
-        numberofseeds = 0;
-    }
-
     public void PauseCon(bool OnOff)
     {
         Pause = OnOff;
@@ -80,7 +70,7 @@ public class GridCon : MonoBehaviour
         }
         if (tick >= 1)
         {
-            SeedgrowDie();
+            UpdateGrid();
             tick = 0;
         }
 
@@ -103,26 +93,15 @@ public class GridCon : MonoBehaviour
                     {
                         if(gridArray[x, y].celltype == 0)
                         {
-                            if (numberofseeds >= 1)
+                            if(ReturnNumberOfSeeds(SelectedSeedType) > 0)
                             {
-                                gridArray[x, y].celltype = typeofseed;
-                                numberofseeds -= 1;
+                                RemoveSeed(SelectedSeedType);
+                                gridArray[x, y].celltype = SelectedSeedType;
                             }
                         }
-                        foreach (Items item in ItemList)
+                        else
                         {
-                            if (item.CellType == gridArray[x, y].celltype)
-                            {
-                                if (item.Plant == true)
-                                {
-                                    gridArray[x, y].celltype = 0;
-                                    gridArray[x, y].timer = 0;
-                                    AddMoney(item.Cash);
-                                    Vector3 pos = new Vector3(x + 0.5f, 0, y + 0.5f);
-                                    Quaternion rot = Quaternion.Euler(-90, 0, 0);
-                                    var cp = Instantiate(CashParticles,pos, rot);
-                                }
-                            } 
+                            HarvestCell(x, y);
                         }
                         UpdatePrefab(x,y);
                     }
@@ -130,7 +109,7 @@ public class GridCon : MonoBehaviour
             }
         }
     }
-    private void SeedgrowDie()
+    private void UpdateGrid()
     {
         for (int x = 0; x < gridArray.GetLength(0); x++)
         {
@@ -161,6 +140,18 @@ public class GridCon : MonoBehaviour
                                 gridArray[x, y].timer = 0;
                                 UpdatePrefab(x, y);
                             }
+                        }
+
+                        //Send Planter Jobs To Cat Manager
+                        if(gridArray[x,y].celltype == 0)
+                        {
+                            CatManager.GetComponent<CatManager>().AddPlanterJob(x,y);
+                        }
+
+                        //Sent Harvester Jobs To Cat Manager
+                        if (item.Plant == true)
+                        {
+                            CatManager.GetComponent<CatManager>().AddHarvesterJob(x, y);
                         }
                     }
                 }
@@ -242,32 +233,93 @@ public class GridCon : MonoBehaviour
         CurrencyManager.GetComponent<Money>().AddCurrency(Cash);
     }
 
-    public void ReturnChores(int areax, int areay,int areax2, int areay2, string type,GameObject cat)
-    {
-        if(type == "PLANTER")
-        {
-            for (int x = 0; x < gridArray.GetLength(0); x++)
-            {
-                for (int y = 0; y < gridArray.GetLength(1); y++)
-                {
-                    if (y >= areay && y <= areay2 && x >= areax && x <= areax2)
-                    {
-                        if (gridArray[x, y].celltype == 0)
-                        {
-                            cat.GetComponent<CatCon>().AddChore(x, y);
-                        }
-                    }
-                }
-            }
-        }
-        if (type == "HARVESTER")
-        {
-
-        }
-    }
-
     public void ChangeCell(int x, int y,int Celltype)
     {
         gridArray[x, y].celltype = Celltype;
+        UpdatePrefab(x, y);
+    }
+
+    public void HarvestCell(int x, int y)
+    {
+        foreach (Items item in ItemList)
+        {
+            if (item.CellType == gridArray[x, y].celltype)
+            {
+                if (item.Plant == true)
+                {
+                    gridArray[x, y].celltype = 0;
+                    gridArray[x, y].timer = 0;
+                    AddMoney(item.Cash);
+                    Vector3 pos = new Vector3(x + 0.5f, 0, y + 0.5f);
+                    Quaternion rot = Quaternion.Euler(-90, 0, 0);
+                    var cp = Instantiate(CashParticles, pos, rot);
+
+                    UpdatePrefab(x, y);
+                }
+            }
+        }
+    }
+
+    public void AddSeed(int index)
+    {
+        foreach (Items item in ItemList)
+        {
+            if(item.CellType == index)
+            {
+                item.NumberOfSeeds++;
+            }
+        }
+    }
+
+    public void RemoveSeed(int index)
+    {
+        foreach (Items item in ItemList)
+        {
+            if (item.CellType == index)
+            {
+                item.NumberOfSeeds--;
+            }
+        }
+    }
+
+    public int ReturnNumberOfSeeds(int index)
+    {
+        int total = 0;
+        foreach (Items item in ItemList)
+        {
+            if (item.CellType == index)
+            {
+                total = item.NumberOfSeeds;
+            }
+        }
+        return total;
+    }
+
+    public int ReturnCost(int index)
+    {
+        int cost = 0;
+        foreach (Items item in ItemList)
+        {
+            if (item.CellType == index)
+            {
+                cost = item.Cost;
+            }
+        }
+        return cost;
+    }
+
+    public void SetSelectedSeed(int index)
+    {
+        SelectedSeedType = index;
+    }
+
+    public void BuySeed(int index)
+    {
+        int cost = ReturnCost(index);
+        if (CurrencyManager.GetComponent<Money>().currency >= cost)
+        {
+            AddSeed(index);
+            CurrencyManager.GetComponent<Money>().RemoveCurrency(cost);
+        }
     }
 }
