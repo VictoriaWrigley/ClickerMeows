@@ -5,8 +5,11 @@ using TMPro;
 public class GridCon : MonoBehaviour
 {
     private GridInfo[,] gridArray;
-    private int width;
-    private int height;
+    public int StartWidth;
+    public int StartHeight;
+    public int ExpandCost = 10;
+    public int width;
+    public int height;
     private float cellSize;
     public Color dirt;
     public Color PumpkinSeed;
@@ -27,13 +30,18 @@ public class GridCon : MonoBehaviour
     //temp
     public TextMeshProUGUI PumpkinText;
     public TextMeshProUGUI SpinachText;
+    public TextMeshProUGUI ExpandText;
+    public GameObject CellHighlight;
+    public GameObject FarmGround;
     void Awake()
     {
+        FarmGround.transform.localScale = new Vector3(StartWidth /10f, 1, StartHeight / 10f);
+        FarmGround.transform.position = new Vector3(StartWidth / 2f, 0, StartHeight / 2f);
         if (ItemList == null)
         {
             ItemList = new List<Items>();
         }
-        GenerateGrid(10, 10, 1);
+        GenerateGrid(StartWidth, StartHeight, 1);
         //Set to dirt
         for (int x = 0; x < gridArray.GetLength(0); x++)
         {
@@ -69,52 +77,65 @@ public class GridCon : MonoBehaviour
         //temp
         PumpkinText.text = ItemList[1].NumberOfSeeds.ToString();
         SpinachText.text = ItemList[5].NumberOfSeeds.ToString();
+        ExpandText.text = ExpandCost.ToString();
         //Tick
         if (Pause == false)
         {
             tick += Time.deltaTime;
-        }
-        if (tick >= 1)
-        {
-            UpdateGrid();
-            tick = 0;
+            if (tick >= 1)
+            {
+                UpdateGrid();
+                tick = 0;
+            }
+            UpdateMouse();
         }
 
+    }
+
+    private void UpdateMouse()
+    {
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        RaycastHit hit;
+        Vector3 mousepos = new Vector3(0, 0, 0);
+        LayerMask mask = LayerMask.GetMask("Ground");
+        if (Physics.Raycast(ray, out hit, 100f, mask))
+        {
+            mousepos = hit.point;
+            CellHighlight.SetActive(true);
+        }
+        else
+        {
+            CellHighlight.SetActive(false);
+        }
+        int x1 = Mathf.FloorToInt(mousepos[0]);
+        int y1 = Mathf.FloorToInt(mousepos[2]);
+        int x = 0;
+        int y = 0;
+        if(x1 >= 0 && x1 <= width && y1 >= 0 && y1 < height)
+        {
+            x = Mathf.FloorToInt(mousepos[0]);
+            y = Mathf.FloorToInt(mousepos[2]);
+        }
+        Vector3 highlightpos = new Vector3(x + 0.5f, 0.1f, y + 0.5f);
+        CellHighlight.transform.position = highlightpos;
         if (Input.GetMouseButtonDown(0) && Pause == false)
         {
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            RaycastHit hit;
-            Vector3 mousepos = new Vector3(0, 0, 0);
-            LayerMask mask = LayerMask.GetMask("Ground");
-            if (Physics.Raycast(ray, out hit, 100f, mask))
+            if (gridArray[x, y].celltype == 0)
             {
-                mousepos = hit.point;
-            }
-            Debug.Log(mousepos);
-            for (int x = 0; x < gridArray.GetLength(0); x++)
-            {
-                for (int y = 0; y < gridArray.GetLength(1); y++)
+                if (ReturnNumberOfSeeds(SelectedSeedType) > 0)
                 {
-                    if (mousepos.x > x && mousepos.x < x + 1 && mousepos.z > y && mousepos.z < y + 1)
-                    {
-                        if(gridArray[x, y].celltype == 0)
-                        {
-                            if(ReturnNumberOfSeeds(SelectedSeedType) > 0)
-                            {
-                                RemoveSeed(SelectedSeedType);
-                                gridArray[x, y].celltype = SelectedSeedType;
-                            }
-                        }
-                        else
-                        {
-                            HarvestCell(x, y);
-                        }
-                        UpdatePrefab(x,y);
-                    }
+                    RemoveSeed(SelectedSeedType);
+                    gridArray[x, y].celltype = SelectedSeedType;
                 }
             }
+            else
+            {
+                HarvestCell(x, y);
+            }
+            UpdatePrefab(x, y);
         }
     }
+
     private void UpdateGrid()
     {
         for (int x = 0; x < gridArray.GetLength(0); x++)
@@ -189,6 +210,24 @@ public class GridCon : MonoBehaviour
         {
             gridArray[x, y].CurrentPrefab = null;
         }
+    }
+
+    public void ExpandGrid()
+    {
+        if(CurrencyManager.GetComponent<Money>().currency < ExpandCost)
+        {
+            return;
+        }
+        else
+        {
+            CurrencyManager.GetComponent<Money>().RemoveCurrency(ExpandCost);
+            ExpandCost += Mathf.RoundToInt(ExpandCost / 4f);
+        }
+        width++;
+        height++;
+        GenerateGrid(width, height, 1);
+        FarmGround.transform.localScale = new Vector3(width / 10f, 1, height / 10f);
+        FarmGround.transform.position = new Vector3(width / 2f, 0, height / 2f);
     }
 
     private void OnDrawGizmos()
