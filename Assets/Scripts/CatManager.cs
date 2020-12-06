@@ -11,7 +11,8 @@ public class CatManager : MonoBehaviour
     public GameObject BananaPlanterPrefab;
     public GameObject HarvesterPrefab;
     public GameObject CurrencyManager;
-
+    private CatListData jobtoremove;
+    public int harvesterlength;
     public void AddPlanterJob(int x, int y)
     {
         CatListData newjob = new CatListData(x, y);
@@ -38,29 +39,40 @@ public class CatManager : MonoBehaviour
         HarvesterJobs.Add(newjob);
     }
 
+
     public void UpdateListWithMouse(int x, int y, int index)
     {
         foreach (CatListData job in PlanterJobs)
         {
             if (job.x == x && job.y == y)
             {
-                if(index != 0) //update this for soil
+                if (index != 0) //update this for soil
                 {
-                    PlanterJobs.Remove(job);
+                    jobtoremove = job;
+                }
+            }
+        }
+        foreach (CatListData job in HarvesterJobs)
+        {
+            if (job.x == x && job.y == y)
+            {
+                if (index == 0) //change this to soil
+                {
+                    jobtoremove = job;
                 }
             }
         }
 
-        foreach(CatListData job in HarvesterJobs)
+        if (PlanterJobs.Contains(jobtoremove))
         {
-            if(job.x == x && job.y == y)
-            {
-                if(index == 0) //change this to soil
-                {
-                    HarvesterJobs.Remove(job);
-                }
-            }
+            PlanterJobs.Remove(jobtoremove);
         }
+
+        if (HarvesterJobs.Contains(jobtoremove))
+        {
+            HarvesterJobs.Remove(jobtoremove);
+        }
+        harvesterlength = HarvesterJobs.Count;
     }
 
     public void GivePlanterJob(GameObject cat)

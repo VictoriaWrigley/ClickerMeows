@@ -2,8 +2,18 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+[System.Serializable]
+public struct CatBoxInfo
+{
+    public int x;
+    public int y;
+    public int x2;
+    public int y2;
+}
+
 public class CatCon : MonoBehaviour
 {
+    public float speed;
     public int Seedtype;
     public CatListData Job;
     public TypesOfCat MyType = TypesOfCat.PLANTER;
@@ -11,7 +21,8 @@ public class CatCon : MonoBehaviour
     public GameObject CatManager;
     private float tick;
     private float tick2;
-
+    private bool plant;
+    private bool harvest;
     public void Awake()
     {
         CatManager = GameObject.Find("CatManager");
@@ -50,18 +61,40 @@ public class CatCon : MonoBehaviour
                     case TypesOfCat.PLANTER:
                         if(Job != null && GridManager.GetComponent<GridCon>().ReturnNumberOfSeeds(Seedtype) > 0)
                         {
-                            Plant();
+                            plant = true;
+                        }
+                        else
+                        {
+                            plant = false;
                         }
                         break;
                     case TypesOfCat.HARVESTER:
                         if(Job != null)
                         {
-                            Harvest();
+                            harvest = true;
+                        }
+                        else
+                        {
+                            harvest = false;
                         }
                         break;
                 }
             }
         }
+        if(plant == true)
+        {
+            Plant();
+        }
+        if(harvest == true)
+        {
+            Harvest();
+        }
+    }
+
+    public void CreateBox(int x, int y, int x2,int y2)
+    {
+        CatBoxInfo box; box.x = x; box.y = y; box.x2 = x2; box.y2 = y2;
+
     }
 
     public void GetJob()
@@ -85,19 +118,32 @@ public class CatCon : MonoBehaviour
 
     public void Plant()
     {
-        Vector3 pos = new Vector3(Job.x, 1, Job.y);
-        transform.position = pos;
-        GridManager.GetComponent<GridCon>().RemoveSeed(Seedtype);
-        GridManager.GetComponent<GridCon>().ChangeCell(Job.x,Job.y,Seedtype);
-        Job = null;
+        Vector3 target = new Vector3(Job.x + 0.5f, 0, Job.y + 0.5f);
+        transform.position = Vector3.Lerp(transform.position, target,speed * Time.deltaTime);
+        if(transform.position.x < target.x + 0.5f && transform.position.x > target.x - 0.5f && transform.position.z < target.z + 0.5f && transform.position.z > target.z - 0.5F)
+        {
+            if(Job != null)
+            {
+                GridManager.GetComponent<GridCon>().RemoveSeed(Seedtype);
+                GridManager.GetComponent<GridCon>().ChangeCell(Job.x, Job.y, Seedtype);
+                Job = null;
+                plant = false;
+            }
+        }
     }
 
     public void Harvest()
     {
-        Vector3 pos = new Vector3(Job.x, 1, Job.y);
-        transform.position = pos;
-
-        GridManager.GetComponent<GridCon>().HarvestCell(Job.x, Job.y);
-        Job = null;
+        Vector3 target = new Vector3(Job.x + 0.5f, 0, Job.y + 0.5f);
+        transform.position = Vector3.Lerp(transform.position, target, speed * Time.deltaTime);
+        if (transform.position.x < target.x + 0.5f && transform.position.x > target.x - 0.5f && transform.position.z < target.z + 0.5f && transform.position.z > target.z - 0.5F)
+        {
+            if (Job != null)
+            {
+                GridManager.GetComponent<GridCon>().HarvestCell(Job.x, Job.y);
+                Job = null;
+                harvest = false;
+            }
+        }
     }
 }

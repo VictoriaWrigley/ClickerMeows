@@ -158,12 +158,8 @@ public class GridCon : MonoBehaviour
                 HarvestCell(x, y);
             }
             UpdatePrefab(x, y);
+            CatManager.GetComponent<CatManager>().UpdateListWithMouse(x, y, gridArray[x,y].celltype);
         }
-    }
-
-    public void UpdateCatManager(int x, int y)
-    {
-
     }
 
     private void UpdateGrid()
