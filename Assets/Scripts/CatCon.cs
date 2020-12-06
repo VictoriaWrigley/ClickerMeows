@@ -14,6 +14,8 @@ public struct CatBoxInfo
 public class CatCon : MonoBehaviour
 {
     public float speed;
+    public float rotationspeed;
+    public float rotationmagnitude;
     public int Seedtype;
     public CatListData Job;
     public TypesOfCat MyType = TypesOfCat.PLANTER;
@@ -83,10 +85,12 @@ public class CatCon : MonoBehaviour
         }
         if(plant == true)
         {
+            WalkTowardsJob();
             Plant();
         }
         if(harvest == true)
         {
+            WalkTowardsJob();
             Harvest();
         }
     }
@@ -116,11 +120,18 @@ public class CatCon : MonoBehaviour
         Job = newjob;
     }
 
+    public void WalkTowardsJob()
+    {
+        Vector3 target = new Vector3(Job.x + 0.5f, 0, Job.y + 0.5f);
+        transform.position = Vector3.MoveTowards(transform.position, target, speed);
+        Vector3 newDirection = Vector3.RotateTowards(transform.forward, target - transform.position, rotationspeed, rotationmagnitude);
+        transform.rotation = Quaternion.LookRotation(newDirection);
+    }
+
     public void Plant()
     {
         Vector3 target = new Vector3(Job.x + 0.5f, 0, Job.y + 0.5f);
-        transform.position = Vector3.Lerp(transform.position, target,speed * Time.deltaTime);
-        if(transform.position.x < target.x + 0.5f && transform.position.x > target.x - 0.5f && transform.position.z < target.z + 0.5f && transform.position.z > target.z - 0.5F)
+        if (transform.position.x < target.x + 0.5f && transform.position.x > target.x - 0.5f && transform.position.z < target.z + 0.5f && transform.position.z > target.z - 0.5F)
         {
             if(Job != null)
             {
@@ -135,7 +146,6 @@ public class CatCon : MonoBehaviour
     public void Harvest()
     {
         Vector3 target = new Vector3(Job.x + 0.5f, 0, Job.y + 0.5f);
-        transform.position = Vector3.Lerp(transform.position, target, speed * Time.deltaTime);
         if (transform.position.x < target.x + 0.5f && transform.position.x > target.x - 0.5f && transform.position.z < target.z + 0.5f && transform.position.z > target.z - 0.5F)
         {
             if (Job != null)
