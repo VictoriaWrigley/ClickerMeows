@@ -17,6 +17,6 @@ public class Items
     public Object Prefab = null;
     public int NumberOfSeeds = 0;
     public int Cost = 0;
-
+    public int MerchantValue;
 }
 

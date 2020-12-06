@@ -35,10 +35,6 @@ public class GridCon : MonoBehaviour
     public GameObject CellHighlight;
     public GameObject FarmGround;
 
-    public int Sseedspertick;
-    public int pseedspertick;
-    public int bseedspertick;
-
     public TextMeshProUGUI Stext;
     public TextMeshProUGUI ptext;
     public TextMeshProUGUI btext;
@@ -85,13 +81,13 @@ public class GridCon : MonoBehaviour
     void Update()
     {
         //temp
-        PumpkinText.text = ItemList[1].NumberOfSeeds.ToString();
-        SpinachText.text = ItemList[5].NumberOfSeeds.ToString();
-        BananaText.text = ItemList[9].NumberOfSeeds.ToString();
+        PumpkinText.text = ItemList[7].NumberOfSeeds.ToString();
+        SpinachText.text = ItemList[3].NumberOfSeeds.ToString();
+        BananaText.text = ItemList[11].NumberOfSeeds.ToString();
         ExpandText.text = ExpandCost.ToString();
-        Stext.text = Sseedspertick.ToString();
-        ptext.text = pseedspertick.ToString();
-        btext.text = bseedspertick.ToString();
+        Stext.text = ItemList[3].MerchantValue.ToString();
+        ptext.text = ItemList[7].MerchantValue.ToString();
+        btext.text = ItemList[11].MerchantValue.ToString();
         //Tick
         if (Pause == false)
         {
@@ -110,41 +106,12 @@ public class GridCon : MonoBehaviour
     //fix this
     public void BuyMerchantSeeds()
     {
-        if(Sseedspertick > 0 && CurrencyManager.GetComponent<Money>().currency >= Sseedspertick)
+        foreach(Items item in ItemList)
         {
-            foreach (Items item in ItemList)
+            if(item.MerchantValue > 0 && CurrencyManager.GetComponent<Money>().currency >= item.MerchantValue)
             {
-                if (item.CellType == 5)
-                {
-                    item.NumberOfSeeds += Sseedspertick;
-                    CurrencyManager.GetComponent<Money>().RemoveCurrency(Sseedspertick);
-                }
-            }
-        }
-        if (pseedspertick > 0 && CurrencyManager.GetComponent<Money>().currency >= pseedspertick *3)
-        {
-            foreach (Items item in ItemList)
-            {
-                if (item.CellType == 1)
-                {
-                
-                        item.NumberOfSeeds += pseedspertick;
-                        CurrencyManager.GetComponent<Money>().RemoveCurrency(pseedspertick * 3);
-                    
-                }
-            }
-        }
-        if (bseedspertick > 0 && CurrencyManager.GetComponent<Money>().currency >= bseedspertick * 20)
-        {
-            foreach (Items item in ItemList)
-            {
-                if (item.CellType == 9)
-                {
-                 
-                        item.NumberOfSeeds += bseedspertick;
-                        CurrencyManager.GetComponent<Money>().RemoveCurrency(bseedspertick * 20);
-                 
-                }
+                item.NumberOfSeeds += item.MerchantValue;
+                CurrencyManager.GetComponent<Money>().RemoveCurrency(item.MerchantValue * item.Cost);
             }
         }
     }
@@ -192,6 +159,11 @@ public class GridCon : MonoBehaviour
             }
             UpdatePrefab(x, y);
         }
+    }
+
+    public void UpdateCatManager(int x, int y)
+    {
+
     }
 
     private void UpdateGrid()
@@ -440,37 +412,25 @@ public class GridCon : MonoBehaviour
         }
     }
 
-    public void AddDumbButton(int type)
+    public void AddMerchantSeeds(int type)
     {
-        Debug.Log("press");
-        if(type == 5)
+        foreach(Items item in ItemList)
         {
-            Sseedspertick++;
-        }
-        if (type == 1)
-        {
-            pseedspertick++;
-        }
-        if (type == 9)
-        {
-            bseedspertick++;
+            if(item.CellType == type)
+            {
+                item.MerchantValue++;
+            }
         }
     }
 
-    public void MinusDumbButton(int type)
+    public void RemoveMerchantSeeds(int type)
     {
-        Debug.Log("press");
-        if (type == 5)
+        foreach (Items item in ItemList)
         {
-            Sseedspertick--;
-        }
-        if (type == 1)
-        {
-            pseedspertick--;
-        }
-        if (type == 9)
-        {
-            bseedspertick--;
+            if (item.CellType == type)
+            {
+                item.MerchantValue--;
+            }
         }
     }
 

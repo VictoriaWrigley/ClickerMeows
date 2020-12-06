@@ -5,10 +5,6 @@ using UnityEngine;
 public class CatCon : MonoBehaviour
 {
     public int Seedtype;
-    public int areax;
-    public int areay;
-    public int areax2;
-    public int areay2;
     public CatListData Job;
     public TypesOfCat MyType = TypesOfCat.PLANTER;
     private GameObject GridManager;
