@@ -25,7 +25,7 @@ public class CatCon : MonoBehaviour
     public float rotationspeed;
     public float rotationmagnitude;
     public int Seedtype;
-    public CatListData Job;
+    public CatListData Job = null;
     public TypesOfCat MyType = TypesOfCat.PLANTER;
     private GameObject GridManager;
     public GameObject CatManager;
@@ -34,6 +34,9 @@ public class CatCon : MonoBehaviour
     private bool plant;
     private bool harvest;
     public CatBoxInfo box;
+    public GameObject patch = null;
+    public GameObject ring;
+    public bool selected = false;
     public void Awake()
     {
         CatManager = GameObject.Find("CatManager");
@@ -42,6 +45,7 @@ public class CatCon : MonoBehaviour
     public void OnEnable()
     {
         GridManager = GameObject.Find("GridManager");
+        ring.SetActive(false);
     }
     public enum TypesOfCat
     {
@@ -50,6 +54,10 @@ public class CatCon : MonoBehaviour
     }
     void Update()
     {
+        if (patch == null)
+        {
+            return;
+        }
         tick += Time.deltaTime;
 
         if(tick >= 1)
@@ -65,6 +73,7 @@ public class CatCon : MonoBehaviour
             {
                 if(Job == null)
                 {
+                    Debug.Log("GetJob");
                     GetJob();
                 }
                 switch (MyType)
@@ -104,11 +113,14 @@ public class CatCon : MonoBehaviour
         }
     }
 
-    public void SetCatBox(CatBoxInfo info)
+    public void SetCatBox(CatBoxInfo info, GameObject plane)
     {
-        box = info;
-        Debug.Log(box.x + "x");
-        Debug.Log(box.x + "y");
+        box = new CatBoxInfo(info.x,info.y,info.x2,info.y2);
+        Debug.Log(box.x + "box x");
+        Debug.Log(box.y + "box y");
+        Debug.Log(box.x2 + "box x");
+        Debug.Log(box.y2 + "box y");
+        patch = plane;
     }
 
     public void GetJob()
@@ -168,8 +180,23 @@ public class CatCon : MonoBehaviour
         }
     }
 
+    public void Highlight()
+    {
+        ring.SetActive(true);
+    }
+
+    public void Highlightfalse()
+    {
+        ring.SetActive(false);
+        var rend = ring.GetComponent<SpriteRenderer>();
+        rend.material.color = Color.white;
+        selected = false;
+    }
+
     public void Select()
     {
-        Debug.Log("Hit");
+        var rend = ring.GetComponent<SpriteRenderer>();
+        rend.material.color = Color.yellow;
+        selected = true;
     }
 }
