@@ -27,6 +27,10 @@ public class GridCon : MonoBehaviour
     public GameObject CashParticles;
     public GameObject CatManager;
     public GameObject SeedManager;
+    public GameObject SoilPlane;
+    public bool DrawMode = false;
+    private int x3;
+    private int y3;
     //temp
     public TextMeshProUGUI PumpkinText;
     public TextMeshProUGUI SpinachText;
@@ -38,7 +42,10 @@ public class GridCon : MonoBehaviour
     public TextMeshProUGUI Stext;
     public TextMeshProUGUI ptext;
     public TextMeshProUGUI btext;
-
+    public TextMeshProUGUI CostOfNewPatch;
+    public GameObject BuildCanvas;
+    public bool selectingcat = false;
+    public GameObject CatSelected = null;
     void Awake()
     {
         FarmGround.transform.localScale = new Vector3(StartWidth /10f, 1, StartHeight / 10f);
@@ -121,31 +128,127 @@ public class GridCon : MonoBehaviour
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         RaycastHit hit;
         Vector3 mousepos = new Vector3(0, 0, 0);
-        LayerMask mask = LayerMask.GetMask("Ground");
-        if (Physics.Raycast(ray, out hit, 100f, mask))
+        if (Physics.Raycast(ray, out hit, 100f))
         {
-            mousepos = hit.point;
-            CellHighlight.SetActive(true);
+            if(hit.transform.gameObject.tag == "Ground")
+            {
+                mousepos = hit.point;
+                CellHighlight.SetActive(true);
+            }
+
+            if (hit.transform.gameObject.tag == "Patch")
+            {
+                mousepos = hit.point;
+                CellHighlight.SetActive(true);
+
+                if (Input.GetMouseButtonDown(1) && selectingcat == true && CatSelected != null)
+                {
+                    CatSelected.GetComponent<CatCon>().SetCatBox(hit.transform.gameObject.GetComponent<Patch>().MyBox);
+                }
+            }
+
+            if (Input.GetMouseButton(0))
+            {
+                if (hit.transform.gameObject.tag == "Cat")
+                {
+                    CatSelected = hit.transform.gameObject;
+                    hit.transform.gameObject.GetComponent<CatCon>().Select();
+                    selectingcat = true;
+                }
+                else
+                {
+                    selectingcat = false;
+                }
+            }
         }
         else
         {
+            if (Input.GetMouseButton(0))
+            {
+                selectingcat = false;
+            }
+
             CellHighlight.SetActive(false);
             return;
         }
+
         int x1 = Mathf.FloorToInt(mousepos[0]);
         int y1 = Mathf.FloorToInt(mousepos[2]);
         int x = 0;
         int y = 0;
+        float cost = 0;
         if(x1 >= 0 && x1 <= width && y1 >= 0 && y1 < height)
         {
             x = Mathf.FloorToInt(mousepos[0]);
             y = Mathf.FloorToInt(mousepos[2]);
         }
-        Vector3 highlightpos = new Vector3(x + 0.5f, 0.1f, y + 0.5f);
+        Vector3 highlightpos = new Vector3(x + 0.5f, 0.05f, y + 0.5f);
         CellHighlight.transform.position = highlightpos;
-        if (Input.GetMouseButtonDown(0) && Pause == false)
+        CellHighlight.transform.localScale = new Vector3(1, 1, 1);
+        if(DrawMode == true)
         {
-            if (gridArray[x, y].celltype == 0)
+            if (Input.GetMouseButtonDown(0))
+            {
+                x3 = x;
+                y3 = y;
+                Debug.Log(gridArray[x,y].celltype);
+            }
+
+            if (Input.GetMouseButton(0))
+            {
+                float middlex = (x3 + (x + 1)) / 2f;
+                float middley = (y3 + (y + 1)) / 2f;
+                float width2 = Mathf.Abs((x) - x3) + 1;
+                float height2 = Mathf.Abs((y) - y3) + 1;
+                cost = width2 * height2;
+                CostOfNewPatch.text = cost.ToString();
+                CellHighlight.transform.position = new Vector3(middlex, 0.05f, middley);
+                CellHighlight.transform.localScale = new Vector3(width2, height2, 1);
+            }
+
+            CatBoxInfo box = new CatBoxInfo(x3, y3, x, y);
+            if (Input.GetMouseButtonUp(0))
+            {
+                float width2 = Mathf.Abs((x) - x3) + 1;
+                float height2 = Mathf.Abs((y) - y3) + 1;
+                cost = width2 * height2;
+                if (CurrencyManager.GetComponent<Money>().currency < cost)
+                {
+                    cost = 0;
+                    return;
+                }
+                else
+                {
+                    CurrencyManager.GetComponent<Money>().RemoveCurrency(Mathf.RoundToInt(cost));
+                    cost = 0;
+                }
+                for (int x4 = 0; x4 < gridArray.GetLength(0); x4++)
+                {
+                    for (int y4 = 0; y4 < gridArray.GetLength(1); y4++)
+                    {
+                        float middlex = (box.x + (box.x2 + 1)) / 2f;
+                        float middley = (box.y + (box.y2 + 1)) / 2f;
+                        width2 = Mathf.Abs((box.x2) - box.x) + 1;
+                        height2 = Mathf.Abs((box.y2) - box.y) + 1;
+
+                        if (x4 >= middlex - width2/2 && x4 < middlex + width2 / 2 && y4 >= middley - height2 / 2 && y4 < middley + height2 / 2)
+                        {
+                            if (gridArray[x4, y4].celltype == 2)
+                            {
+                                return;
+                            }
+                            gridArray[x4, y4].celltype = 2;
+                        }
+                    }
+                }
+                var plane = Instantiate(SoilPlane, new Vector3(0, 0, 0), Quaternion.identity);
+                plane.gameObject.GetComponent<Patch>().MakeSoilPlane(box);
+            }
+        }
+
+        if (Input.GetMouseButtonDown(0) && Pause == false && DrawMode == false)
+        {
+            if (gridArray[x, y].celltype == 2)
             {
                 if (ReturnNumberOfSeeds(SelectedSeedType) > 0)
                 {
@@ -196,7 +299,7 @@ public class GridCon : MonoBehaviour
                         }
 
                         //Send Planter Jobs To Cat Manager
-                        if(gridArray[x,y].celltype == 0)
+                        if(gridArray[x,y].celltype == 2)
                         {
                             CatManager.GetComponent<CatManager>().AddPlanterJob(x,y);
                         }
@@ -269,49 +372,6 @@ public class GridCon : MonoBehaviour
         FarmGround.transform.position = new Vector3(width / 2f, 0, height / 2f);
     }
 
-    private void OnDrawGizmos()
-    {
-        if(gridArray != null)
-        {
-            for (int x = 0; x < gridArray.GetLength(0); x++)
-            {
-                for (int y = 0; y < gridArray.GetLength(1); y++)
-                {
-                    Vector3 pos = new Vector3(x + 0.5f, 0, y + 0.5f);
-                    Vector3 size = new Vector3(1, 0.1f, 1);
-                    if (gridArray[x, y].celltype == 0)
-                    {
-                        Gizmos.color = dirt;
-                    }
-                    if (gridArray[x, y].celltype == 1)
-                    {
-                        Gizmos.color = PumpkinSeed;
-                    }
-                    if (gridArray[x, y].celltype == 2)
-                    {
-                        Gizmos.color = YoungPumpkin;
-                    }
-                    if (gridArray[x, y].celltype == 3)
-                    {
-                        Gizmos.color = Pumpkin;
-                    }
-                    if (gridArray[x, y].celltype == 4)
-                    {
-                        Gizmos.color = SpinachSeed;
-                    }
-                    if (gridArray[x, y].celltype == 5)
-                    {
-                        Gizmos.color = YoungSpinach;
-                    }
-                    if (gridArray[x, y].celltype == 6)
-                    {
-                        Gizmos.color = Spinach;
-                    }
-                    Gizmos.DrawCube(pos, size);
-                }
-            }
-        }
-    }
     public void AddMoney(int Cash)
     {
         CurrencyManager.GetComponent<Money>().AddCurrency(Cash);
@@ -430,8 +490,10 @@ public class GridCon : MonoBehaviour
         }
     }
 
-    public void test()
+    public void ToggleBuildMode()
     {
-        Debug.Log("test");
+        DrawMode = !DrawMode;
+        BuildCanvas.SetActive(DrawMode);
     }
+
 }

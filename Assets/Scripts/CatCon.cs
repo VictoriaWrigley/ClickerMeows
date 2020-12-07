@@ -3,12 +3,20 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [System.Serializable]
-public struct CatBoxInfo
+public class CatBoxInfo
 {
     public int x;
     public int y;
     public int x2;
     public int y2;
+
+    public CatBoxInfo(int xx,int yy,int xxx,int yyy)
+    {
+        x = xx;
+        y = yy;
+        x2 = xxx;
+        y2 = yyy;
+    }
 }
 
 public class CatCon : MonoBehaviour
@@ -25,6 +33,7 @@ public class CatCon : MonoBehaviour
     private float tick2;
     private bool plant;
     private bool harvest;
+    public CatBoxInfo box;
     public void Awake()
     {
         CatManager = GameObject.Find("CatManager");
@@ -95,28 +104,28 @@ public class CatCon : MonoBehaviour
         }
     }
 
-    public void CreateBox(int x, int y, int x2,int y2)
+    public void SetCatBox(CatBoxInfo info)
     {
-        CatBoxInfo box; box.x = x; box.y = y; box.x2 = x2; box.y2 = y2;
-
+        box = info;
+        Debug.Log(box.x + "x");
+        Debug.Log(box.x + "y");
     }
 
     public void GetJob()
     {
         if(MyType == TypesOfCat.PLANTER)
         {
-            CatManager.GetComponent<CatManager>().GivePlanterJob(gameObject);
+            CatManager.GetComponent<CatManager>().GivePlanterJob(gameObject,box);
         }
 
         if (MyType == TypesOfCat.HARVESTER)
         {
-            CatManager.GetComponent<CatManager>().GiveHarvesterJob(gameObject);
+            CatManager.GetComponent<CatManager>().GiveHarvesterJob(gameObject,box);
         }
     }
 
-    public void SetJob(int x, int y)
+    public void SetJob(CatListData newjob)
     {
-        CatListData newjob = new CatListData(x, y);
         Job = newjob;
     }
 
@@ -137,6 +146,7 @@ public class CatCon : MonoBehaviour
             {
                 GridManager.GetComponent<GridCon>().RemoveSeed(Seedtype);
                 GridManager.GetComponent<GridCon>().ChangeCell(Job.x, Job.y, Seedtype);
+                CatManager.GetComponent<CatManager>().RemoveJob(Job);
                 Job = null;
                 plant = false;
             }
@@ -151,9 +161,15 @@ public class CatCon : MonoBehaviour
             if (Job != null)
             {
                 GridManager.GetComponent<GridCon>().HarvestCell(Job.x, Job.y);
+                CatManager.GetComponent<CatManager>().RemoveJob(Job);
                 Job = null;
                 harvest = false;
             }
         }
+    }
+
+    public void Select()
+    {
+        Debug.Log("Hit");
     }
 }
