@@ -178,12 +178,29 @@ public class GridCon : MonoBehaviour
 
                 if(RemoveMode == true) //destroy patch
                 {
-                    var box = hit.transform.gameObject.GetComponent<Patch>().MyBox;
-                    float width2 = Mathf.Abs((box.x2) - box.x) + 1;
-                    float height2 = Mathf.Abs((box.y2) - box.y) + 1;
-                    float refund = width2 * height2 + (width2 * height2 * ExpandCounter);
-                    CurrencyManager.GetComponent<Money>().AddCurrency(Mathf.RoundToInt(refund));
-                    Destroy(hit.transform.gameObject);
+                    if (Input.GetMouseButton(0))
+                    {
+                        var box = hit.transform.gameObject.GetComponent<Patch>().MyBox;
+                        float width2 = Mathf.Abs((box.x2) - box.x) + 1;
+                        float height2 = Mathf.Abs((box.y2) - box.y) + 1;
+                        float refund = width2 * height2 + (width2 * height2 * ExpandCounter);
+                        CurrencyManager.GetComponent<Money>().AddCurrency(Mathf.RoundToInt(refund));
+                        Destroy(hit.transform.gameObject);
+
+                        for (int x4 = 0; x4 < gridArray.GetLength(0); x4++)
+                        {
+                            for (int y4 = 0; y4 < gridArray.GetLength(1); y4++)
+                            {
+                                float middlex = (box.x + (box.x2 + 1)) / 2f;
+                                float middley = (box.y + (box.y2 + 1)) / 2f;
+
+                                if (x4 >= middlex - width2 / 2 && x4 < middlex + width2 / 2 && y4 >= middley - height2 / 2 && y4 < middley + height2 / 2)
+                                {
+                                    gridArray[x4, y4].celltype = 0;
+                                }
+                            }
+                        }
+                    }
                 }
                 mousepos = hit.point;
                 CellHighlight.SetActive(true);

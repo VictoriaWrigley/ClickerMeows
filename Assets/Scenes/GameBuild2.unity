@@ -748,7 +748,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 739237726}
-        m_MethodName: ToggleBuildMode
+        m_MethodName: DrawModeOn
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -2498,7 +2498,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 739237726}
-        m_MethodName: ToggleBuildMode
+        m_MethodName: RemoveModeOn
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -4963,7 +4963,7 @@ Light:
   m_BounceIntensity: 1
   m_ColorTemperature: 6570
   m_UseColorTemperature: 0
-  m_BoundingSphereOverride: {x: 0, y: NaN, z: 1e-45, w: 9e-44}
+  m_BoundingSphereOverride: {x: 0, y: 0, z: 1.83672e-40, w: -3.11e-43}
   m_UseBoundingSphereOverride: 0
   m_ShadowRadius: 0
   m_ShadowAngle: 0
@@ -16203,7 +16203,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 98cee983f9ccc76408a3d3b4fadb3a30, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currency: 415
+  currency: 7
   Currencytext: {fileID: 1609520264}
 --- !u!4 &2124682969
 Transform:
