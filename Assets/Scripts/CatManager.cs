@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using TMPro;
 public class CatManager : MonoBehaviour
 {
     public List<CatListData> PlanterJobs = new List<CatListData>();
@@ -14,6 +14,23 @@ public class CatManager : MonoBehaviour
     public GameObject CurrencyManager;
     private CatListData jobtoremove;
     public int harvesterlength;
+
+    public int cost1 = 100;
+    public int cost2 = 200;
+    public int cost3 = 400;
+    public int cost4 = 75;
+    public TextMeshProUGUI SpinachCatCost;
+    public TextMeshProUGUI PumpkinCatCost;
+    public TextMeshProUGUI BananaCatCost;
+    public TextMeshProUGUI HarvesterCatCost;
+    public void Update()
+    {
+        //display costs
+        SpinachCatCost.text = cost1.ToString();
+        PumpkinCatCost.text = cost2.ToString();
+        BananaCatCost.text = cost3.ToString();
+        HarvesterCatCost.text = cost4.ToString();
+    }
 
     public void AddPlanterJob(int x, int y)
     {
@@ -98,90 +115,110 @@ public class CatManager : MonoBehaviour
         harvesterlength = HarvesterJobs.Count;
     }
 
-    public void GivePlanterJob(GameObject cat, CatBoxInfo box)
+    public void GivePlanterJob(GameObject cat, CatBoxInfo info)
     {
-        CatListData nextjob = new CatListData(-1,-1);
-        if (PlanterJobs.Count > 0)
+        CatListData nextjob = null;
+        if (PlanterJobs.Count > 0 && info != null)
         {
-            foreach(CatListData job in PlanterJobs)
+            float width2 = Mathf.Abs((info.x2) - info.x) + 1;
+            float height2 = Mathf.Abs((info.y2) - info.y) + 1;
+            float middlex = (info.x + (info.x2 + 1)) / 2f;
+            float middley = (info.y + (info.y2 + 1)) / 2f;
+
+            foreach (CatListData job in PlanterJobs)
             {
-                if(job.x > box.x && job.x < box.x2 && job.y > box.y && job.y > box.y2)
+                if(job.x >= middlex - width2 / 2 && job.x < middlex + width2 / 2 && job.y >= middley - height2 / 2 && job.y < middley + height2 / 2)
                 {
                     nextjob = job;
                     break;
                 }
             }
-            if(nextjob.x == -1)
+            if(nextjob != null)
             {
-                return;
+                cat.GetComponent<CatCon>().SetJob(nextjob);
+                TakenJobs.Add(nextjob);
+                PlanterJobs.Remove(nextjob);
             }
-
-            cat.GetComponent<CatCon>().SetJob(PlanterJobs[0]);
-            TakenJobs.Add(PlanterJobs[0]);
-            PlanterJobs.Remove(PlanterJobs[0]);
         }
     }
 
     public void GiveHarvesterJob(GameObject cat, CatBoxInfo info)
     {
-        if(HarvesterJobs.Count > 0)
+        CatListData nextjob = null;
+        if (HarvesterJobs.Count > 0 && info != null)
         {
-            CatListData nextjob = new CatListData(-1, -1);
+
+            float width2 = Mathf.Abs((info.x2) - info.x) + 1;
+            float height2 = Mathf.Abs((info.y2) - info.y) + 1;
+            float middlex = (info.x + (info.x2 + 1)) / 2f;
+            float middley = (info.y + (info.y2 + 1)) / 2f;
+
             if (HarvesterJobs.Count > 0)
             {
                 foreach (CatListData job in HarvesterJobs)
                 {
-                    if (job.x > info.x && job.x < info.x2 && job.y > info.y && job.y > info.y2)
+                    if (job.x >= middlex - width2 / 2 && job.x < middlex + width2 / 2 && job.y >= middley - height2 / 2 && job.y < middley + height2 / 2)
                     {
                         nextjob = job;
                         break;
                     }
                 }
-                if (nextjob.x == -1)
+                if(nextjob != null)
                 {
-                    return;
+                    if (nextjob.x == -1)
+                    {
+                        return;
+                    }
                 }
 
-                cat.GetComponent<CatCon>().SetJob(HarvesterJobs[0]);
-                TakenJobs.Add(PlanterJobs[0]);
-                HarvesterJobs.Remove(HarvesterJobs[0]);
+                cat.GetComponent<CatCon>().SetJob(nextjob);
+                TakenJobs.Add(nextjob);
+                HarvesterJobs.Remove(nextjob);
             }
         }
     }
 
     public void SpawnSpinachPlanterCat()
     {
-        if (CurrencyManager.GetComponent<Money>().currency >= 100)
+        if (CurrencyManager.GetComponent<Money>().currency >= cost1)
         {
-            Instantiate(SpinachPlanterPrefab, transform.position, Quaternion.identity);
-            CurrencyManager.GetComponent<Money>().RemoveCurrency(100);
+            Vector3 offset = new Vector3(Random.Range(-2f, 2f),0, Random.Range(-2f, 2f));
+            Instantiate(SpinachPlanterPrefab, transform.position + offset, Quaternion.identity);
+            CurrencyManager.GetComponent<Money>().RemoveCurrency(cost1);
+            cost1 += Mathf.RoundToInt(cost1 / 4);
         }
     }
 
     public void SpawnPumpkinPlanterCat()
     {
-        if (CurrencyManager.GetComponent<Money>().currency >= 200)
+        if (CurrencyManager.GetComponent<Money>().currency >= cost2)
         {
-            Instantiate(PumpkinPlanterPrefab, transform.position, Quaternion.identity);
-            CurrencyManager.GetComponent<Money>().RemoveCurrency(200);
+            Vector3 offset = new Vector3(Random.Range(-2f, 2f), 0, Random.Range(-2f, 2f));
+            Instantiate(PumpkinPlanterPrefab, transform.position + offset, Quaternion.identity);
+            CurrencyManager.GetComponent<Money>().RemoveCurrency(cost2);
+            cost2 += Mathf.RoundToInt(cost2 / 4);
         }
     }
 
     public void SpawnBananaPlanterCat()
     {
-        if (CurrencyManager.GetComponent<Money>().currency >= 400)
+        if (CurrencyManager.GetComponent<Money>().currency >= cost3)
         {
-            Instantiate(BananaPlanterPrefab, transform.position, Quaternion.identity);
-            CurrencyManager.GetComponent<Money>().RemoveCurrency(400);
+            Vector3 offset = new Vector3(Random.Range(-2f, 2f), 0, Random.Range(-2f, 2f));
+            Instantiate(BananaPlanterPrefab, transform.position + offset, Quaternion.identity);
+            CurrencyManager.GetComponent<Money>().RemoveCurrency(cost3);
+            cost3 += Mathf.RoundToInt(cost3 / 4);
         }
     }
 
     public void SpawnHarvesterCat()
     {
-        if (CurrencyManager.GetComponent<Money>().currency >= 75)
+        Vector3 offset = new Vector3(Random.Range(-2f, 2f), 0, Random.Range(-2f, 2f));
+        if (CurrencyManager.GetComponent<Money>().currency >= cost4)
         {
-            Instantiate(HarvesterPrefab, transform.position, Quaternion.identity);
-            CurrencyManager.GetComponent<Money>().RemoveCurrency(75);
+            Instantiate(HarvesterPrefab, transform.position + offset, Quaternion.identity);
+            CurrencyManager.GetComponent<Money>().RemoveCurrency(cost4);
+            cost4 += Mathf.RoundToInt(cost4 / 4);
         }
     }
 }

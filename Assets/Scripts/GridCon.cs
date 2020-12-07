@@ -29,13 +29,14 @@ public class GridCon : MonoBehaviour
     public GameObject SeedManager;
     public GameObject SoilPlane;
     public bool DrawMode = false;
+    public bool RemoveMode = false;
     private int x3;
     private int y3;
-    //temp
     public TextMeshProUGUI PumpkinText;
     public TextMeshProUGUI SpinachText;
     public TextMeshProUGUI BananaText;
     public TextMeshProUGUI ExpandText;
+    public int ExpandCounter = 1;
     public GameObject CellHighlight;
     public GameObject FarmGround;
 
@@ -130,6 +131,23 @@ public class GridCon : MonoBehaviour
         Vector3 mousepos = new Vector3(0, 0, 0);
         if (Physics.Raycast(ray, out hit, 100f))
         {
+            if(hit.transform.gameObject.tag == "Cat")
+            {
+                CatSelected = hit.transform.gameObject;
+                CellHighlight.SetActive(false);
+                hit.transform.gameObject.GetComponent<CatCon>().Highlight();
+            }
+            else
+            {
+                if(CatSelected != null)
+                {
+                    if(CatSelected.GetComponent<CatCon>().selected == false)
+                    {
+                        CatSelected.GetComponent<CatCon>().Highlightfalse();
+                        CatSelected = null;
+                    }
+                }
+            }
             if(hit.transform.gameObject.tag == "Ground")
             {
                 mousepos = hit.point;
@@ -138,17 +156,42 @@ public class GridCon : MonoBehaviour
 
             if (hit.transform.gameObject.tag == "Patch")
             {
+                if(selectingcat == true)
+                {
+                    if (Input.GetMouseButtonDown(1) && selectingcat == true && CatSelected != null)
+                    {
+                        CatSelected.GetComponent<CatCon>().SetCatBox(hit.transform.gameObject.GetComponent<Patch>().MyBox, hit.transform.gameObject);
+                    }
+
+                    if (Input.GetMouseButton(1))
+                    {
+                        hit.transform.GetComponent<Patch>().Highlight();
+                        selectingcat = false;
+                        CatSelected.GetComponent<CatCon>().Highlightfalse();
+                        CatSelected = null;
+                    }
+                }
+
+                if(RemoveMode == true) //destroy patch
+                {
+                    var box = hit.transform.gameObject.GetComponent<Patch>().MyBox;
+                    float width2 = Mathf.Abs((box.x2) - box.x) + 1;
+                    float height2 = Mathf.Abs((box.y2) - box.y) + 1;
+                    float refund = width2 * height2 + (width2 * height2 * ExpandCounter);
+                    CurrencyManager.GetComponent<Money>().AddCurrency(Mathf.RoundToInt(refund));
+                    Destroy(hit.transform.gameObject);
+                }
                 mousepos = hit.point;
                 CellHighlight.SetActive(true);
-
-                if (Input.GetMouseButtonDown(1) && selectingcat == true && CatSelected != null)
-                {
-                    CatSelected.GetComponent<CatCon>().SetCatBox(hit.transform.gameObject.GetComponent<Patch>().MyBox);
-                }
             }
 
             if (Input.GetMouseButton(0))
             {
+                if(CatSelected != null)
+                {
+                    CatSelected.GetComponent<CatCon>().Highlightfalse();
+                }
+
                 if (hit.transform.gameObject.tag == "Cat")
                 {
                     CatSelected = hit.transform.gameObject;
@@ -163,9 +206,18 @@ public class GridCon : MonoBehaviour
         }
         else
         {
-            if (Input.GetMouseButton(0))
+            if (CatSelected != null && selectingcat == false)
             {
-                selectingcat = false;
+                CatSelected.GetComponent<CatCon>().Highlightfalse();
+                CatSelected = null;
+            }
+            if (Input.GetMouseButtonDown(0))
+            {
+                if (CatSelected != null)
+                {
+                    CatSelected.GetComponent<CatCon>().Highlightfalse();
+                    CatSelected = null;
+                }
             }
 
             CellHighlight.SetActive(false);
@@ -200,7 +252,7 @@ public class GridCon : MonoBehaviour
                 float middley = (y3 + (y + 1)) / 2f;
                 float width2 = Mathf.Abs((x) - x3) + 1;
                 float height2 = Mathf.Abs((y) - y3) + 1;
-                cost = width2 * height2;
+                cost = width2 * height2 + (width2 * height2 *ExpandCounter);
                 CostOfNewPatch.text = cost.ToString();
                 CellHighlight.transform.position = new Vector3(middlex, 0.05f, middley);
                 CellHighlight.transform.localScale = new Vector3(width2, height2, 1);
@@ -252,8 +304,11 @@ public class GridCon : MonoBehaviour
             {
                 if (ReturnNumberOfSeeds(SelectedSeedType) > 0)
                 {
-                    RemoveSeed(SelectedSeedType);
-                    gridArray[x, y].celltype = SelectedSeedType;
+                    if (CatSelected.GetComponent<CatCon>().selected == false)
+                    {
+                        CatSelected.GetComponent<CatCon>().Highlightfalse();
+                        CatSelected = null;
+                    }
                 }
             }
             else
@@ -351,6 +406,7 @@ public class GridCon : MonoBehaviour
         {
             CurrencyManager.GetComponent<Money>().RemoveCurrency(ExpandCost);
             ExpandCost += Mathf.RoundToInt(ExpandCost / 4f);
+            ExpandCounter++;
         }
         GridInfo[,] temparray = new GridInfo[width, height];
         System.Array.Copy(gridArray, temparray, width * height);
@@ -391,7 +447,7 @@ public class GridCon : MonoBehaviour
             {
                 if (item.Plant == true)
                 {
-                    gridArray[x, y].celltype = 0;
+                    gridArray[x, y].celltype = 2;
                     gridArray[x, y].timer = 0;
                     AddMoney(item.Cash);
                     Vector3 pos = new Vector3(x + 0.5f, 0, y + 0.5f);
@@ -494,6 +550,18 @@ public class GridCon : MonoBehaviour
     {
         DrawMode = !DrawMode;
         BuildCanvas.SetActive(DrawMode);
+        RemoveMode = false;
     }
 
+    public void DrawModeOn()
+    {
+        DrawMode = true;
+        RemoveMode = false;
+    }
+
+    public void RemoveModeOn()
+    {
+        DrawMode = false;
+        RemoveMode = true;
+    }
 }
