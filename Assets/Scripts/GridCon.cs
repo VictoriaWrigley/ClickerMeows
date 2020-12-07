@@ -11,13 +11,6 @@ public class GridCon : MonoBehaviour
     public int width;
     public int height;
     private float cellSize;
-    public Color dirt;
-    public Color PumpkinSeed;
-    public Color YoungPumpkin;
-    public Color Pumpkin;
-    public Color SpinachSeed;
-    public Color YoungSpinach;
-    public Color Spinach;
     public GameObject CellBehaviourManager;
     private float tick = 0;
     public GameObject CurrencyManager;
@@ -35,6 +28,8 @@ public class GridCon : MonoBehaviour
     public TextMeshProUGUI PumpkinText;
     public TextMeshProUGUI SpinachText;
     public TextMeshProUGUI BananaText;
+    public TextMeshProUGUI CarrotText;
+    public TextMeshProUGUI DragonText;
     public TextMeshProUGUI ExpandText;
     public int ExpandCounter = 1;
     public GameObject CellHighlight;
@@ -43,6 +38,8 @@ public class GridCon : MonoBehaviour
     public TextMeshProUGUI Stext;
     public TextMeshProUGUI ptext;
     public TextMeshProUGUI btext;
+    public TextMeshProUGUI carrottext;
+    public TextMeshProUGUI dragontext;
     public TextMeshProUGUI CostOfNewPatch;
     public GameObject BuildCanvas;
     public bool selectingcat = false;
@@ -89,13 +86,17 @@ public class GridCon : MonoBehaviour
     void Update()
     {
         //temp
-        PumpkinText.text = ItemList[7].NumberOfSeeds.ToString();
+        PumpkinText.text = ItemList[11].NumberOfSeeds.ToString();
         SpinachText.text = ItemList[3].NumberOfSeeds.ToString();
-        BananaText.text = ItemList[11].NumberOfSeeds.ToString();
+        BananaText.text = ItemList[15].NumberOfSeeds.ToString();
+        CarrotText.text = ItemList[7].NumberOfSeeds.ToString();
+        DragonText.text = ItemList[19].NumberOfSeeds.ToString();
         ExpandText.text = ExpandCost.ToString();
         Stext.text = ItemList[3].MerchantValue.ToString();
-        ptext.text = ItemList[7].MerchantValue.ToString();
-        btext.text = ItemList[11].MerchantValue.ToString();
+        ptext.text = ItemList[11].MerchantValue.ToString();
+        btext.text = ItemList[15].MerchantValue.ToString();
+        carrottext.text = ItemList[7].MerchantValue.ToString();
+        dragontext.text = ItemList[19].MerchantValue.ToString();
         //Tick
         if (Pause == false)
         {
@@ -116,7 +117,7 @@ public class GridCon : MonoBehaviour
     {
         foreach(Items item in ItemList)
         {
-            if(item.MerchantValue > 0 && CurrencyManager.GetComponent<Money>().currency >= item.MerchantValue)
+            if(item.MerchantValue > 0 && CurrencyManager.GetComponent<Money>().currency >= item.MerchantValue * item.Cost)
             {
                 item.NumberOfSeeds += item.MerchantValue;
                 CurrencyManager.GetComponent<Money>().RemoveCurrency(item.MerchantValue * item.Cost);
@@ -167,8 +168,11 @@ public class GridCon : MonoBehaviour
                     {
                         hit.transform.GetComponent<Patch>().Highlight();
                         selectingcat = false;
-                        CatSelected.GetComponent<CatCon>().Highlightfalse();
-                        CatSelected = null;
+                        if(CatSelected != null)
+                        {
+                            CatSelected.GetComponent<CatCon>().Highlightfalse();
+                            CatSelected = null;
+                        }
                     }
                 }
 
@@ -184,23 +188,21 @@ public class GridCon : MonoBehaviour
                 mousepos = hit.point;
                 CellHighlight.SetActive(true);
             }
-
             if (Input.GetMouseButton(0))
             {
                 if(CatSelected != null)
                 {
                     CatSelected.GetComponent<CatCon>().Highlightfalse();
-                }
-
-                if (hit.transform.gameObject.tag == "Cat")
-                {
-                    CatSelected = hit.transform.gameObject;
-                    hit.transform.gameObject.GetComponent<CatCon>().Select();
-                    selectingcat = true;
-                }
-                else
-                {
-                    selectingcat = false;
+                    if (hit.transform.gameObject.tag == "Cat")
+                    {
+                        CatSelected = hit.transform.gameObject;
+                        hit.transform.gameObject.GetComponent<CatCon>().Select();
+                        selectingcat = true;
+                    }
+                    else
+                    {
+                        selectingcat = false;
+                    }
                 }
             }
         }
@@ -304,10 +306,19 @@ public class GridCon : MonoBehaviour
             {
                 if (ReturnNumberOfSeeds(SelectedSeedType) > 0)
                 {
-                    if (CatSelected.GetComponent<CatCon>().selected == false)
+                    if(CatSelected == null)
                     {
-                        CatSelected.GetComponent<CatCon>().Highlightfalse();
-                        CatSelected = null;
+                        ChangeCell(x, y, SelectedSeedType);
+                        RemoveSeed(SelectedSeedType);
+                    }
+                    
+                    if(CatSelected != null)
+                    {
+                        if (CatSelected.GetComponent<CatCon>().selected == false)
+                        {
+                            CatSelected.GetComponent<CatCon>().Highlightfalse();
+                            CatSelected = null;
+                        }
                     }
                 }
             }
@@ -541,7 +552,10 @@ public class GridCon : MonoBehaviour
         {
             if (item.CellType == type)
             {
-                item.MerchantValue--;
+                if(item.MerchantValue > 0)
+                {
+                    item.MerchantValue--;
+                }
             }
         }
     }
