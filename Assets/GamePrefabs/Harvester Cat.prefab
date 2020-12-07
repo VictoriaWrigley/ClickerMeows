@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 5525805425757086123}
   m_Layer: 0
   m_Name: Harvester Cat
-  m_TagString: Untagged
+  m_TagString: Cat
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -111,6 +111,9 @@ MonoBehaviour:
   rotationspeed: 0.1
   rotationmagnitude: 0
   Seedtype: 1
+  Job:
+    x: 0
+    y: 0
   MyType: 1
   CatManager: {fileID: 0}
 --- !u!1001 &3821631065137780374
